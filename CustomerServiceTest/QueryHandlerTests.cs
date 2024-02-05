@@ -26,16 +26,18 @@ namespace CustomerServiceTest
         [Fact]
         public async Task GetCustomerQueryHandle_CustomerNotExist_ReturnsFailResponse()
         {
+            CleanupCustomers();
+
             var query = new GetCustomerQuery("test_guid");
 
             await Assert.ThrowsAsync<Exception>(async () => await _handler.Handle(query, CancellationToken.None));
-
-            CleanupCustomers();
         }
 
         [Fact]
         public async Task GetCustomerQueryHandle_ExistingCustomer_ReturnsDataResponse1()
         {
+            CleanupCustomers();
+
             var query = new GetCustomerQuery("test_guid");
 
             var existingCustomer = new Customer { Id = "test_guid", Name = "Name", Surname = "Surname", Email = "mail@email.com" };
@@ -47,13 +49,13 @@ namespace CustomerServiceTest
             Assert.True(result.Success);
             Assert.IsType<DataResponse<Customer>>(result);
             Assert.Equal(existingCustomer, ((DataResponse<Customer>)result).Data);
-
-            CleanupCustomers();
         }
 
         [Fact]
         public async Task ListCustomerQueryHandle_ReturnsDataResponseWithListOfCustomers()
         {
+            CleanupCustomers();
+
             var query = new ListCustomerQuery("");
 
             var customers = new List<Customer>
@@ -70,13 +72,13 @@ namespace CustomerServiceTest
             Assert.True(result.Success);
             Assert.IsType<DataResponse<List<Customer>>>(result);
             Assert.NotEmpty((result as DataResponse<List<Customer>>).Data);
-
-            CleanupCustomers();
         }
 
         [Fact]
         public async Task ListCustomerQueryHandle_ReturnsFailResponse()
         {
+            CleanupCustomers();
+
             var query = new ListCustomerQuery("z");
 
             var customers = new List<Customer>
@@ -93,8 +95,6 @@ namespace CustomerServiceTest
             Assert.True(result.Success);
             Assert.IsType<DataResponse<List<Customer>>>(result);
             Assert.Empty((result as DataResponse<List<Customer>>).Data);
-
-            CleanupCustomers();
         }
 
         private void CleanupCustomers()
